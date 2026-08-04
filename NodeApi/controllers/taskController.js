@@ -239,7 +239,7 @@ module.exports = {
     getTaskByIdController,
     createTaskController,
     updateTaskController,
-    updateTaskStatusController,
+    updateTaskStatusController, 
     deleteTaskController,
     getStatsController
 }

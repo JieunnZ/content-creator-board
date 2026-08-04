@@ -30,12 +30,10 @@ CREATE TABLE IF NOT EXISTS tasks (
      -- 索引
      KEY idx_tasks_status (status),
      KEY idx_tasks_priority (priority),
-     KEY idx_tasks_due_date (due_date),
-     KEY idx_tasks_created_at (created_at)
+     KEY idx_tasks_due_date (due_date)
      )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
      -- 3. 插入演示数据
-
 INSERT INTO tasks (title, description, assignee, priority, status, due_date) VALUES
 -- 1. 策划中 + 高优先级（热点跟进）
 ('Vue3.5新特性实战解读', '梳理Vue3.5的CompositionAPI改进、响应式优化，配合实战案例演示', '张三', 'high', 'todo', NULL),

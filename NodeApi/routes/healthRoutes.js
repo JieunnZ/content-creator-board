@@ -13,8 +13,8 @@ GET /api/health:
 成功响应的 data.service 为 ok。
 */
 router.get('/health', (req, res) => {
-    success(res, {service: 'ok'});
-});
+    success(res, {service: 'ok'})
+})
 
 /* 
 GET /api/health/db:
@@ -25,14 +25,14 @@ GET /api/health/db:
  */
 router.get('/health/db', async(req, res) => {
     try {
-        const isConnected = await testConnection();// 测试数据库连接
+        const isConnected = await testConnection()// 测试数据库连接
         if (isConnected) {
-            success(res, {database: 'ok'});
+            success(res, {database: 'ok'})
         }else {
-            error(res, '数据库暂时不可用', 503);
+            error(res, '数据库暂时不可用', 503)
         }
     } catch (err) {
-        error(res, '数据库暂时不可用', 503);
+        error(res, '数据库暂时不可用', 503)
     }
 })
-module.exports = router;
+module.exports = router
