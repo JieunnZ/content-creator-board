@@ -7,7 +7,8 @@
 }
 
 /* 清除列表样式 */
-ul, ol {
+ul,
+ol {
     list-style: none;
 }
 
@@ -26,7 +27,9 @@ button {
 }
 
 /* 清除输入框默认样式 */
-input, textarea, select {
+input,
+textarea,
+select {
     border: none;
     outline: none;
     font: inherit;
@@ -39,7 +42,12 @@ img {
 }
 
 /* 清除标题默认样式 */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-weight: normal;
 }
 
@@ -50,8 +58,18 @@ table {
 }
 
 /* 清除引用默认样式 */
-blockquote, q {
+blockquote,
+q {
     quotes: none;
+}
+
+@font-face {
+    font-family: "仓耳渔阳体 W04";
+    font-weight: 400;
+    src: url("//at.alicdn.com/wf/webfont/EB3iX9cvzbiD/6WMcBhKVLfF3.woff2") format("woff2"),
+        url("//at.alicdn.com/wf/webfont/EB3iX9cvzbiD/IKWNR9J34It8.woff") format("woff");
+    font-variation-settings: normal;
+    font-display: swap;
 }
 
 /* 设置 body 默认字体 */
