@@ -1,6 +1,5 @@
 <script setup>
 import { Plus, VideoCamera} from '@element-plus/icons-vue'
-import {reactive} from 'vue'
 import FilterPanel from '@/components/FilterPanel.vue'
 import StatsPanel from '@/components/StatsPanel.vue'
 import TaskForm from '@/components/TaskForm.vue'
@@ -8,14 +7,9 @@ import TaskTable from '@/components/TaskTable.vue'
 import { useTaskStore } from '@/stores/taskStore'
 import { onMounted } from 'vue'
 const taskStore = useTaskStore()
-const filters = reactive({
-    keyword: '',
-    status: '',
-    priority: '',
-})
 // 加载数据
 onMounted(() => {
-taskStore.loadTask(filters)
+taskStore.loadTask(taskStore.filters)
 })
 </script>
 <template>

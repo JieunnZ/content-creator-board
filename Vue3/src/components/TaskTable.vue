@@ -32,11 +32,16 @@ const taskStore = useTaskStore()
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="180" fixed="right" >
-                    <template #default="tasksDate">
+                    <template #default="{ row }">
                         <el-button>编辑</el-button>
-                        <el-button>编辑</el-button>
+                        <el-button>删除</el-button>
                     </template>
                 </el-table-column>
+                <template #empty>
+                    <el-empty description="无匹配结果">
+                        <el-button style="margin-top: -60px;" plain @click="taskStore.handleReset">加载所有</el-button>
+                    </el-empty>
+                </template>
             </el-table> 
         </el-card>
         <!-- 手机端 -->
