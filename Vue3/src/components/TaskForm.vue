@@ -28,16 +28,16 @@ const dialogVisible = ref(true)
             <el-input placeholder="请输入作者昵称" max-length="30" show-word-limit></el-input>
         </el-form-item>
         <el-row>
-            <el-col :span="12">
+            <el-col :xs="24" :sm="12">
                 <el-form-item label="优先级">
-                    <el-select placeholder="请选择优先级" style="width: 200px;">
+                    <el-select placeholder="请选择优先级" >
                         <el-option v-for="item in priorityOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :xs="24" :sm="12">
                 <el-form-item label="状态">
-                    <el-select placeholder="请选择状态" style="width: 200px;">
+                    <el-select placeholder="请选择状态" >
                         <el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value" ></el-option>
                     </el-select>
                 </el-form-item>
@@ -47,7 +47,6 @@ const dialogVisible = ref(true)
             <el-date-picker
                 type="date"
                 placeholder="请选择截止日期"
-                :size="size"
                 value-format="YYYY-MM-DD"
                 clearable
                 style="width: 100%;"

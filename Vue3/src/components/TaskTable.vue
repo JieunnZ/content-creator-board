@@ -1,30 +1,35 @@
 <!-- 任务列表 -->
 <script setup>
-import {statusTag, statusMap, priorityTag,priorityMap, statusOptions} from "@/utils/constants"
-    const tasksData = [
-        {id:1, title:"今日上班vlog今日上班vlog今日上班vlog今日上班vlog今日上班vlog", assignee: "zzz", priority: "high", status: "todo", dueDate: "2026-8-6"},
-        {id:1, title:"今日上班vlog今日上班vlog今日上班vlog今日上班vlog今日上班vlog", assignee: "zzz", priority: "high", status: "已完成", dueDate: "2026-8-6"},
-        {id:1, title:"今日上班vlog今日上班vlog今日上班vlog今日上班vlog今日上班vlog", assignee: "zzz", priority: "high", status: "已完成", dueDate: "2026-8-6"}
-    ]
+import {priorityTag,priorityMap, statusOptions} from "@/utils/constants"
+import { useTaskStore } from '@/stores/taskStore'
+import dayjs from 'dayjs'
+const taskStore = useTaskStore()
 </script>
 <template>
     <div class="task-table">
         <!-- 桌面端 -->
         <el-card class="pc-card">
-            <el-table :data="tasksData" style="width: 100%" >
+            <el-table :data="taskStore.tasksData" style="width: 100%" >
                 <el-table-column prop="id" label="ID" width="60" />
-                <el-table-column prop="title" label="标题" min-width="120" show-overflow-tooltip>
-                    <!-- <template></template> -->
+                <el-table-column prop="title" label="标题" min-width="100" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column prop="assignee" label="负责人" width="80" />
                 <el-table-column prop="priority" label="优先级" width="80">    
-                    <!-- <template></template> -->
+                    <template #default="{ row }">
+                        <el-tag :type="priorityTag[row.priority]">{{ priorityMap[row.priority] }}</el-tag>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="status" label="状态" width="80">
-                    <!-- <template></template> -->
+                    <template #default="{ row }">
+                        <el-select size="small" v-model="row.status">
+                            <el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        </el-select>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="dueDate" label="截止日期" width="120">
-                    <!-- <template></template> -->
+                <el-table-column prop="dueDate" label="截止日期" width="120" align="center">
+                    <template #default="{ row }">
+                        {{ row.dueDate ?dayjs(row.dueDate).format('YYYY-MM-DD') : '-' }}
+                    </template>
                 </el-table-column>
                 <el-table-column label="操作" width="180" fixed="right" >
                     <template #default="tasksDate">
@@ -35,7 +40,7 @@ import {statusTag, statusMap, priorityTag,priorityMap, statusOptions} from "@/ut
             </el-table> 
         </el-card>
         <!-- 手机端 -->
-        <el-card class="mobile-card" v-for="row in tasksData">
+        <el-card class="mobile-card" v-for="row in taskStore.tasksData">
             <template #header>
                 <div class="mobile-title">{{ row.title }}</div>
             </template>
@@ -50,25 +55,23 @@ import {statusTag, statusMap, priorityTag,priorityMap, statusOptions} from "@/ut
                 </div>
                 <div class="mobile-row">
                     <span class="mobile-label">状态</span>
-                    <el-select size="small">
+                    <el-select size="small" v-model="row.status">
                         <el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </div>
                 <div class="mobile-row">
                     <span class="mobile-label">发布/截止日期</span>
-                    <span > {{ row.dueDate }}</span>
+                    <span > {{ row.dueDate ?dayjs(row.dueDate).format('YYYY-MM-DD') : '-' }}</span>
                 </div>
                 <div class="mobile-actions">
-                    <el-button type="text" size="small" >编辑</el-button>
-                    <el-button type="text" size="small" style="color: #f56c6c" >删除</el-button>
+                    <el-button link size="small" type="primary" >编辑</el-button>
+                    <el-button link size="small"type="danger" >删除</el-button>
                 </div>
             </div>
         </el-card>
     </div>
 </template>
 <style scoped>
-/* 手机端适配 */
-@media (max-width: 768px) {
     .mobile-card {
         margin-bottom: 8px;
         border-radius: 8px;
@@ -97,5 +100,8 @@ import {statusTag, statusMap, priorityTag,priorityMap, statusOptions} from "@/ut
         display: flex;
         justify-content: space-around;
     }
+/* 手机端适配 */
+@media (max-width: 375px) {
+
 }
 </style>
