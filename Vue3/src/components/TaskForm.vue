@@ -54,7 +54,6 @@ const resetForm = () => {
 // 数据回显
 const setFormData = (data) => {
     if (data) {
-          console.log('data.dueDate:', data.dueDate, '类型:', typeof data.dueDate)
         ruleForm.id = data.id
         ruleForm.title = data.title
         ruleForm.description = data.description  || ''
@@ -86,8 +85,6 @@ const submitting = ref(false)
 // 提交表单
 const handleSubmit = async () => {
     if (submitting.value) return
-            console.log('dueDate 原始值:', ruleForm.dueDate, '类型:', typeof ruleForm.dueDate)
-
     try {
         // 等待表单校验通过
         await formRef.value.validate()
@@ -100,7 +97,6 @@ const handleSubmit = async () => {
             status: ruleForm.status,
             dueDate: ruleForm.dueDate || null
         }
-        console.log('dueDate 原始值:', ruleForm.dueDate, '类型:', typeof ruleForm.dueDate,'....',submitData.dueDate)
         // 编辑
         if (taskStore.isEdit) {
             await taskStore.editTask(ruleForm.id, submitData)
@@ -122,7 +118,7 @@ const handleSubmit = async () => {
 <template>
     <el-dialog v-model= "taskStore.isVisible"
     :title="taskStore.isEdit ?' 编辑内容' : '新增内容'"
-    width="90%"
+    width="90%"  :show-close="!submitting"  
     :close-on-click-modal="false"
     >
     <el-form label-width="auto" ref="formRef" :model="ruleForm" :rules="rules">
@@ -173,7 +169,7 @@ const handleSubmit = async () => {
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button style="width: 80px;" @click="taskStore.isVisible=false" >取消</el-button>
+        <el-button style="width: 80px;" @click="taskStore.isVisible=false"  :disabled="submitting">取消</el-button>
         <el-button type="primary" style="width: 80px;" @click="handleSubmit" :loading="submitting">
           {{taskStore.isEdit ? '保存修改' : '创建内容'}}
         </el-button>
