@@ -32,7 +32,7 @@ export const useTaskStore = defineStore('task', () => {
       const { all = 0, todo = 0, doing = 0, done = 0 } = statsRes.data.data || {}
       // 数据概览
       stats.value = { all, todo, doing, done }
-      // 无匹配数据
+      // 无匹配数据 数据长度为0 且 有筛选条件（排除数据库本身无数据）
       isEmpty.value = tasksData.value.length === 0 && (filter.keyword?.trim() || filter.status || filter.priority)
     } catch (err) {
       ElMessage.error(err.message || '加载数据失败')
@@ -48,5 +48,21 @@ export const useTaskStore = defineStore('task', () => {
     isEmpty.value = false
     loadTask(filters)
   }
-  return { isEmpty, filters, loading, stats, tasksData, loadTask, handleReset }
+  //是否显示弹窗
+  const isVisible = ref(false)
+  // 是否编辑状态
+  const isEdit = ref(false)
+  // 当前编辑任务数据
+  const editData = ref(null)
+  // 新增任务
+  const addTask = async (data) => {
+    await createTask(data)
+    await loadTask(filters)
+  }
+  // 编辑任务
+  const editTask = async (id, data) => {
+    await updateTask(id, data)
+    await loadTask(filters)
+  }
+  return { editData, isVisible, isEdit, isEmpty, filters, loading, stats, tasksData, loadTask, handleReset, addTask, editTask }
 })

@@ -4,6 +4,13 @@ import {priorityTag,priorityMap, statusOptions} from "@/utils/constants"
 import { useTaskStore } from '@/stores/taskStore'
 import dayjs from 'dayjs'
 const taskStore = useTaskStore()
+// 编辑任务
+const openEditForm = (task) => {
+    taskStore.isVisible = true
+    taskStore.isEdit = true
+    taskStore.editData = {...task}
+    console.log(taskStore.editData)
+}
 </script>
 <template>
     <div class="task-table">
@@ -19,7 +26,7 @@ const taskStore = useTaskStore()
                         <el-tag :type="priorityTag[row.priority]">{{ priorityMap[row.priority] }}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column prop="status" label="状态" width="80">
+                <el-table-column prop="status" label="状态" width="100">
                     <template #default="{ row }">
                         <el-select size="small" v-model="row.status">
                             <el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -33,12 +40,12 @@ const taskStore = useTaskStore()
                 </el-table-column>
                 <el-table-column label="操作" width="180" fixed="right" >
                     <template #default="{ row }">
-                        <el-button>编辑</el-button>
+                        <el-button @click="openEditForm(row)">编辑</el-button>
                         <el-button>删除</el-button>
                     </template>
                 </el-table-column>
                 <template #empty>
-                    <el-empty description="无匹配结果">
+                    <el-empty :description="taskStore.isEmpty? '无匹配结果' : '暂无任务'">
                         <el-button style="margin-top: -60px;" plain @click="taskStore.handleReset">加载所有</el-button>
                     </el-empty>
                 </template>
@@ -65,18 +72,27 @@ const taskStore = useTaskStore()
                     </el-select>
                 </div>
                 <div class="mobile-row">
-                    <span class="mobile-label">发布/截止日期</span>
+                    <span class="mobile-label">发布日期</span>
                     <span > {{ row.dueDate ?dayjs(row.dueDate).format('YYYY-MM-DD') : '-' }}</span>
                 </div>
                 <div class="mobile-actions">
-                    <el-button link size="small" type="primary" >编辑</el-button>
+                    <el-button link size="small" type="primary" @click="openEditForm(row)">编辑</el-button>
                     <el-button link size="small"type="danger" >删除</el-button>
                 </div>
             </div>
         </el-card>
+        <!-- 无匹配数据 -->
+        <div class="empty-stats" v-if="taskStore.tasksData.length === 0">
+            <el-empty :description="taskStore.isEmpty? '无匹配结果' : '暂无任务'">
+                <el-button plain @click="taskStore.handleReset">加载所有</el-button>
+            </el-empty>
+        </div>
     </div>
 </template>
 <style scoped>
+    /* .mobile-card {
+        display: none;
+    } */
     .mobile-card {
         margin-bottom: 8px;
         border-radius: 8px;
@@ -106,7 +122,12 @@ const taskStore = useTaskStore()
         justify-content: space-around;
     }
 /* 手机端适配 */
-@media (max-width: 375px) {
-
-}
+/* @media (max-width: 375px) {
+    .mobile-card {
+        display: block;
+    }
+    .pc-card {
+        display: none !important;
+    }
+} */
 </style>

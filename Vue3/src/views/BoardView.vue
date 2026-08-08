@@ -7,6 +7,12 @@ import TaskTable from '@/components/TaskTable.vue'
 import { useTaskStore } from '@/stores/taskStore'
 import { onMounted } from 'vue'
 const taskStore = useTaskStore()
+// 打开新增弹窗
+const openAddForm = () => {
+    taskStore.isVisible = true
+    taskStore.isEdit = false
+    taskStore.editData = null
+}
 // 加载数据
 onMounted(() => {
 taskStore.loadTask(taskStore.filters)
@@ -21,7 +27,7 @@ taskStore.loadTask(taskStore.filters)
                     <el-icon><VideoCamera /></el-icon> 创作日历 · 内容工坊</h1>
                 <span class="subtitle">从想法到发布，一站式管理你的创作旅程</span>
             </div>
-            <el-button type="info" dark plain>
+            <el-button type="info" dark plain @click="openAddForm">
                 <el-icon><Plus /></el-icon>
                 新增内容
             </el-button>
@@ -33,7 +39,7 @@ taskStore.loadTask(taskStore.filters)
         <!-- 任务列表 -->
         <TaskTable></TaskTable>
         <!-- 任务表单 -->
-        <TaskForm></TaskForm>
+        <TaskForm ></TaskForm>
     </div>
 </template>
 <style scoped>

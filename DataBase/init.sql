@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS tasks (
      priority ENUM('low','medium','high') NOT NULL DEFAULT 'medium',
      -- 状态： todo:待处理，doing：进行中，done：已完成
      status ENUM('todo','doing','done') NOT NULL DEFAULT 'todo',
-     -- 截止日期:目标发布日期或实际发布日期
+     --发布日期
      due_date DATE DEFAULT NULL,
      -- 创建时间：当前时间，数据库自动生成
      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
