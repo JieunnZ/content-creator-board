@@ -54,10 +54,25 @@ export const useTaskStore = defineStore('task', () => {
   const isEdit = ref(false)
   // 当前编辑任务数据
   const editData = ref(null)
+  // 打开新增弹窗
+  const openAddForm = () => {
+    isVisible.value = true
+    isEdit.value = false
+    editData.value = null
+  }
   // 新增任务
   const addTask = async (data) => {
     await createTask(data)
     await loadTask(filters)
+  }
+  // 获取任务详情
+  const getTask = async (id) => {
+    try {
+      const res = await getTaskById(id)
+      return res.data.data
+    } catch (err) {
+      ElMessage.error(err.message) || '获取任务详情失败'
+    }
   }
   // 编辑任务
   const editTask = async (id, data) => {
@@ -74,5 +89,10 @@ export const useTaskStore = defineStore('task', () => {
       ElMessage.error(err.message || '状态更新失败')
     }
   }
-  return { editData, isVisible, isEdit, isEmpty, filters, loading, stats, tasksData, loadTask, handleReset, addTask, editTask, changeStatus }
+  // 删除任务
+  const deleteTaskById = async (id) => {
+    await deleteTask(id)
+    await loadTask(filters)
+  }
+  return { editData, isVisible, isEdit, isEmpty, filters, loading, stats, tasksData, loadTask, handleReset, addTask, editTask, changeStatus, getTask, deleteTaskById, openAddForm }
 })

@@ -3,13 +3,28 @@
 import {priorityTag,priorityMap, statusOptions} from "@/utils/constants"
 import { useTaskStore } from '@/stores/taskStore'
 import dayjs from 'dayjs'
+import { ElMessage } from 'element-plus'
 const taskStore = useTaskStore()
 // 编辑任务
-const openEditForm = (task) => {
+const openEditForm = async (task) => {
+    const data = await taskStore.getTask(task.id)
     taskStore.isVisible = true
     taskStore.isEdit = true
-    taskStore.editData = {...task}
-    console.log(taskStore.editData)
+    taskStore.editData = data
+}
+// 删除任务
+const handleDelete = async (task) => {
+    try {
+        await ElMessageBox.confirm(
+            `确认删除[${ task.title}]吗？此操作不可恢复。`,'确认删除',   {confirmButtonText: '确认删除',cancelButtonText: '取消',type: 'warning',}
+        )
+        await taskStore.deleteTaskById(task.id)
+        ElMessage.success('删除成功')
+    }catch (err) {
+        if (err !== 'cancel') {
+            ElMessage.error(err.message || '删除失败');
+        }
+    }
 }
 </script>
 <template>
@@ -41,12 +56,12 @@ const openEditForm = (task) => {
                 <el-table-column label="操作" width="180" fixed="right" >
                     <template #default="{ row }">
                         <el-button @click="openEditForm(row)">编辑</el-button>
-                        <el-button>删除</el-button>
+                        <el-button @click="handleDelete(row)">删除</el-button>
                     </template>
                 </el-table-column>
                 <template #empty>
                     <el-empty :description="taskStore.isEmpty? '无匹配结果' : '暂无任务'">
-                        <el-button style="margin-top: -60px;" plain @click="taskStore.handleReset">加载所有</el-button>
+                        <el-button style="margin-top: -60px;" plain @click="taskStore.isEmpty?taskStore.handleReset() : taskStore.openAddForm()" >{{ taskStore.isEmpty? '清空筛选' : '新增任务' }}</el-button>
                     </el-empty>
                 </template>
             </el-table> 
@@ -77,14 +92,14 @@ const openEditForm = (task) => {
                 </div>
                 <div class="mobile-actions">
                     <el-button link size="small" type="primary" @click="openEditForm(row)">编辑</el-button>
-                    <el-button link size="small"type="danger" >删除</el-button>
+                    <el-button link size="small"type="danger" @click="handleDelete(row)">删除</el-button>
                 </div>
             </div>
         </el-card>
         <!-- 无匹配数据 -->
         <div class="empty-stats" v-if="taskStore.tasksData.length === 0">
             <el-empty :description="taskStore.isEmpty? '无匹配结果' : '暂无任务'">
-                <el-button plain @click="taskStore.handleReset">加载所有</el-button>
+                <el-button plain  @click="taskStore.isEmpty?taskStore.handleReset() : taskStore.openAddForm()">{{ taskStore.isEmpty? '清空筛选' : '新增任务' }}</el-button>
             </el-empty>
         </div>
     </div>
