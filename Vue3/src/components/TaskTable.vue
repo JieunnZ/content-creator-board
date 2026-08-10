@@ -28,7 +28,7 @@ const openEditForm = (task) => {
                 </el-table-column>
                 <el-table-column prop="status" label="状态" width="100">
                     <template #default="{ row }">
-                        <el-select size="small" v-model="row.status">
+                        <el-select size="small" v-model="row.status" @change="taskStore.changeStatus(row)">
                             <el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
                         </el-select>
                     </template>
@@ -67,7 +67,7 @@ const openEditForm = (task) => {
                 </div>
                 <div class="mobile-row">
                     <span class="mobile-label">状态</span>
-                    <el-select size="small" v-model="row.status">
+                    <el-select size="small" v-model="row.status" @change="taskStore.changeStatus(row)">
                         <el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </div>

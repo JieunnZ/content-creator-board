@@ -64,5 +64,15 @@ export const useTaskStore = defineStore('task', () => {
     await updateTask(id, data)
     await loadTask(filters)
   }
-  return { editData, isVisible, isEdit, isEmpty, filters, loading, stats, tasksData, loadTask, handleReset, addTask, editTask }
+  // 状态修改
+  const changeStatus = async ({ id, status }) => {
+    try {
+      await updateTaskStatus(id, status)
+      ElMessage.success('状态已更新')
+      await loadTask(filters)
+    } catch (err) {
+      ElMessage.error(err.message || '状态更新失败')
+    }
+  }
+  return { editData, isVisible, isEdit, isEmpty, filters, loading, stats, tasksData, loadTask, handleReset, addTask, editTask, changeStatus }
 })
