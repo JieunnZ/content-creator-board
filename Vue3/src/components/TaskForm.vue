@@ -107,33 +107,37 @@ const handleSubmit = async () => {
             ElMessage.success('创建成功')
         }
         taskStore.isVisible = false
-    }catch(err){
-        ElMessage.error(err.message || '操作失败，请重试')
-    }finally {
+    }catch(err){ }finally {
         submitting.value = false
     }
 }
-
+// 取消
+const handleCancel = () => {
+    if (submitting.value) {
+        ElMessage.warning('正在提交中，请勿关闭')
+        return
+    }
+    taskStore.isVisible=false
+}
 </script>
 <template>
     <el-dialog v-model= "taskStore.isVisible"
-    :title="taskStore.isEdit ?' 编辑内容' : '新增内容'"
-    width="90%"  :show-close="!submitting"  
-    :close-on-click-modal="false"
+    :title="taskStore.isEdit ?' 编辑内容' : '新增内容'" :show-close="!submitting"  
+    :close-on-click-modal="false" width="50%"
+     style="border-radius: 8px; background: #f8f9fc;" 
     >
-    <el-form label-width="auto" ref="formRef" :model="ruleForm" :rules="rules">
+    <el-form label-width="auto" ref="formRef" :model="ruleForm" :rules="rules"  style="margin: 0 4px;" >
         <el-form-item label="标题" prop="title">
-            <el-input v-model="ruleForm.title" placeholder="请输入内容标题" max-length="100" show-word-limit></el-input>
+            <el-input v-model="ruleForm.title" placeholder="请输入内容标题" maxlength="100" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="文案">
             <el-input
             v-model="ruleForm.description"
                 placeholder="内容说明或文案"
-                :rows="2"
+                :rows="3"
                 type="textarea"
-                max-length="500"
-                show-word-limit
-                rows="3"
+                maxlength="500"
+               show-word-limit 
             />
         </el-form-item>
         <el-form-item label="作者" prop="assignee">
@@ -169,7 +173,7 @@ const handleSubmit = async () => {
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button style="width: 80px;" @click="taskStore.isVisible=false"  :disabled="submitting">取消</el-button>
+        <el-button style="width: 80px;" @click="handleCancel"  :disabled="submitting">取消</el-button>
         <el-button type="primary" style="width: 80px;" @click="handleSubmit" :loading="submitting">
           {{taskStore.isEdit ? '保存修改' : '创建内容'}}
         </el-button>
@@ -177,4 +181,10 @@ const handleSubmit = async () => {
     </template>
   </el-dialog>
 </template>
-<style scoped></style>
+<style scoped>
+@media (max-width: 768px) {
+:global(.el-dialog) {
+        width: 80% !important;
+    }
+}
+</style>

@@ -13,7 +13,7 @@ taskStore.loadTask(taskStore.filters)
 })
 </script>
 <template>
-    <div class="board" v-loading.fullscreen.lock="taskStore.loading" element-loading-background="rgba(122, 122, 122, 0.8)" element-loading-text="加载中，请稍候...">
+    <div class="board">
         <!-- 页面头部 -->
         <header class="board-header" >
             <div class="header-left">
@@ -26,28 +26,49 @@ taskStore.loadTask(taskStore.filters)
                 新增内容
             </el-button>
         </header>
-        <!-- 数据概览 -->
-        <StatsPanel></StatsPanel>
-        <!-- 筛选区域 -->
-        <FilterPanel></FilterPanel>
-        <!-- 任务列表 -->
-        <TaskTable></TaskTable>
-        <!-- 任务表单 -->
-        <TaskForm ></TaskForm>
+        <div class="body">
+            <!-- 数据概览 -->
+            <StatsPanel></StatsPanel>
+            <div class="table">
+                <!-- 筛选区域 -->
+                <FilterPanel></FilterPanel>
+                <!-- 任务列表 -->
+                <TaskTable class="task-table"></TaskTable>
+            </div>
+            <!-- 任务表单 -->
+            <TaskForm ></TaskForm>
+        </div>
     </div>
 </template>
 <style scoped>
 .board {
-min-height: 400px;
+    height: 100vh;
+    display: flex;      
+    flex-direction: column;  
+    background-color:#EEF1F5;
+}
+.body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.table {
+    margin: 0 12px;
+    padding: 10px 4px;
+    flex: 1;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
 }
 .board-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    margin: 0 auto;
-    padding: 10px 20px; 
-    background: #DCDCDC;
+    padding: 10px 10px; 
+    flex-shrink: 0;
 }
 .header-left {
         display: flex;
@@ -68,9 +89,7 @@ min-height: 400px;
 .header-left .subtitle {
     font-size: 14px;
     color: #888;
-    background: #f0f0f0;
     padding: 2px 12px;
-    border-radius: 8px;
     margin:0 20px;
 }
 .board-header button {
@@ -78,6 +97,7 @@ min-height: 400px;
     line-height: 32px;
     margin-right: 20px;
 }
+
 @media(max-width: 768px) {
     .board-header {
         flex-direction: column;

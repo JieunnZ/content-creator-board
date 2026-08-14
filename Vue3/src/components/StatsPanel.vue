@@ -35,9 +35,11 @@ const taskStore = useTaskStore()
 </template>
 <style scoped>
 .stats-panel {
-    margin-bottom: 4px;
+    margin: 0 8px 8px;
+    padding: 0 5px;
 }
 .stats-card {
+    min-height: 80px;
     text-align: center;
     border-radius: 8px;
     background: #fff;

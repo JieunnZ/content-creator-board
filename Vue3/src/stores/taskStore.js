@@ -16,15 +16,18 @@ export const useTaskStore = defineStore('task', () => {
   })
   // 是否无匹配数据
   const isEmpty = ref(false)
-  // 加载数据
+  // 错误状态
+  const error = ref(null)
+  // 加载数据+统计
   const loadTask = async (filter) => {
     loading.value = true
+    error.value = null
     try {
       const params = {}
       // 判断是否有搜索条件
-      if (filter.keyword.trim()) params.keyword = filter.keyword.trim()
-      if (filter.status) params.status = filter.status
-      if (filter.priority) params.priority = filter.priority
+      if (filter?.keyword.trim()) params.keyword = filter.keyword.trim()
+      if (filter?.status) params.status = filter.status
+      if (filter?.priority) params.priority = filter.priority
       const tasksRes = await getTasks(params)
       const statsRes = await getStats()
       tasksData.value = tasksRes.data.data.tasks
@@ -35,7 +38,9 @@ export const useTaskStore = defineStore('task', () => {
       // 无匹配数据 数据长度为0 且 有筛选条件（排除数据库本身无数据）
       isEmpty.value = tasksData.value.length === 0 && (filter.keyword?.trim() || filter.status || filter.priority)
     } catch (err) {
-      ElMessage.error(err.message || '加载数据失败')
+      error.value = err.message?.includes('502')
+        ? '后端服务未启动，请检查服务器'
+        : err?.message || '加载数据失败'
     } finally {
       loading.value = false
     }
@@ -71,7 +76,7 @@ export const useTaskStore = defineStore('task', () => {
       const res = await getTaskById(id)
       return res.data.data
     } catch (err) {
-      ElMessage.error(err.message) || '获取任务详情失败'
+      return null
     }
   }
   // 编辑任务
@@ -79,20 +84,44 @@ export const useTaskStore = defineStore('task', () => {
     await updateTask(id, data)
     await loadTask(filters)
   }
+  // 状态是否在修改
+  const isStatusChange = ref(false)
   // 状态修改
-  const changeStatus = async ({ id, status }) => {
+  const changeStatus = async (row, newStatus, oldStatus) => {
+    if (isStatusChange.value) {
+      // 正在修改状态
+      ElMessage.warning('正在更新中，请勿重复操作')
+      return
+    }
+    isStatusChange.value = true
     try {
-      await updateTaskStatus(id, status)
+      await updateTaskStatus(row.id, newStatus)
       ElMessage.success('状态已更新')
       await loadTask(filters)
+
     } catch (err) {
-      ElMessage.error(err.message || '状态更新失败')
+      row.status = oldStatus
+    } finally {
+      isStatusChange.value = false
     }
   }
+  // 是否正在删除
+  const isDeleting = ref(false)
+  // 正在删除的id
+  const deletingId = ref(null)
   // 删除任务
   const deleteTaskById = async (id) => {
-    await deleteTask(id)
-    await loadTask(filters)
+    isDeleting.value = true
+    deletingId.value = id
+    try {
+      await deleteTask(id)
+      ElMessage.success('删除成功')
+      await loadTask(filters)
+    } catch (err) {
+    } finally {
+      isDeleting.value = false
+      deletingId.value = null
+    }
   }
-  return { editData, isVisible, isEdit, isEmpty, filters, loading, stats, tasksData, loadTask, handleReset, addTask, editTask, changeStatus, getTask, deleteTaskById, openAddForm }
+  return { isDeleting, deletingId, isStatusChange, error, editData, isVisible, isEdit, isEmpty, filters, loading, stats, tasksData, loadTask, handleReset, addTask, editTask, changeStatus, getTask, deleteTaskById, openAddForm }
 })
