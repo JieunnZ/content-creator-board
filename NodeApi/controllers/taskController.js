@@ -59,7 +59,7 @@ async function getTasksController(req, res) {
         // 将数据库字段转换为驼峰命名
         const tasks = tasksToCamel(rows)
         success(res, {
-            tasks,
+            items: tasks,
             total: tasks.length
         })
     } catch (err) {
@@ -148,7 +148,7 @@ async function updateTaskController(req, res) {
             title,
             description: description || '',
             assignee,
-            priority: priority || 'medium', // 默认优先级为中
+            priority: priority || 'medium', // 默认优先级为medium
             status: status || 'todo',
             due_date: dueDate || null
         })

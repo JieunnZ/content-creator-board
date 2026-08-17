@@ -18,7 +18,8 @@ taskStore.loadTask(taskStore.filters)
         <header class="board-header" >
             <div class="header-left">
                 <h1 class="title">
-                    <el-icon><VideoCamera /></el-icon> 创作日历 · 内容工坊</h1>
+                    <el-icon><VideoCamera /></el-icon> 创作日历 · 内容工坊
+                </h1>
                 <span class="subtitle">从想法到发布，一站式管理你的创作旅程</span>
             </div>
             <el-button type="info" dark plain @click="taskStore.openAddForm">

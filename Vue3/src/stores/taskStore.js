@@ -1,8 +1,9 @@
-import { ref, computed, reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { ElMessage } from 'element-plus'
 import { getTasks, getTaskById, createTask, updateTask, updateTaskStatus, deleteTask, getStats } from '@/api/taskApi'
 export const useTaskStore = defineStore('task', () => {
+  // 加载状态
   const loading = ref(false)
   //任务列表
   const tasksData = ref([])
@@ -16,7 +17,7 @@ export const useTaskStore = defineStore('task', () => {
   })
   // 是否无匹配数据
   const isEmpty = ref(false)
-  // 错误状态
+  // 错误状态信息
   const error = ref(null)
   // 加载数据+统计
   const loadTask = async (filter) => {
@@ -30,12 +31,12 @@ export const useTaskStore = defineStore('task', () => {
       if (filter?.priority) params.priority = filter.priority
       const tasksRes = await getTasks(params)
       const statsRes = await getStats()
-      tasksData.value = tasksRes.data.data.tasks
       // 任务列表
+      tasksData.value = tasksRes.data.data.items
       const { all = 0, todo = 0, doing = 0, done = 0 } = statsRes.data.data || {}
       // 数据概览
       stats.value = { all, todo, doing, done }
-      // 无匹配数据 数据长度为0 且 有筛选条件（排除数据库本身无数据）
+      // 无匹配数据： 数据长度为0 且 有筛选条件（排除数据库本身无数据）
       isEmpty.value = tasksData.value.length === 0 && (filter.keyword?.trim() || filter.status || filter.priority)
     } catch (err) {
       error.value = err.message?.includes('502')
@@ -98,7 +99,6 @@ export const useTaskStore = defineStore('task', () => {
       await updateTaskStatus(row.id, newStatus)
       ElMessage.success('状态已更新')
       await loadTask(filters)
-
     } catch (err) {
       row.status = oldStatus
     } finally {
